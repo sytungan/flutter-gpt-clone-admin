@@ -1,6 +1,6 @@
 import 'package:eurosom_admin/home/home_page.dart';
-import 'package:eurosom_admin/utils/app_button.dart';
-import 'package:eurosom_admin/utils/app_textfeild.dart';
+import 'package:eurosom_admin/utils/component/app_button.dart';
+import 'package:eurosom_admin/utils/component/app_textfeild.dart';
 import 'package:flutter/material.dart';
 
 class SignInScreen extends StatefulWidget {
@@ -15,10 +15,8 @@ class _SignInScreenState extends State<SignInScreen> {
   final emailController = TextEditingController();
   final passController = TextEditingController();
   bool _obscureText = true;
-  final emailRegex = RegExp(
-      r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+");
-  final passRegex =
-      RegExp(r'^(?=.?[A-Z])(?=.?[a-z])(?=.?[0-9])(?=.?[!@#&*~]).{8,}$');
+  final emailRegex = RegExp(r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+");
+  final passRegex = RegExp(r'^(?=.?[A-Z])(?=.?[a-z])(?=.?[0-9])(?=.?[!@#&*~]).{8,}$');
 
   void onSignIn() {
     if (formKey.currentState != null && formKey.currentState!.validate()) {
@@ -42,26 +40,21 @@ class _SignInScreenState extends State<SignInScreen> {
               children: [
                 const Image(
                   image: AssetImage("assets/ic_logo.png"),
-                ),
-                const SizedBox(
-                  height: 30,
+                  height: 75,
                 ),
                 const Text(
                   "Sign in",
-                  style: TextStyle(
-                      color: Colors.black,
-                      fontSize: 25,
-                      fontWeight: FontWeight.w600),
+                  style: TextStyle(color: Colors.black, fontSize: 25, fontWeight: FontWeight.w600),
                 ),
                 const SizedBox(height: 25),
                 SizedBox(
                   width: MediaQuery.of(context).size.width * .350,
                   child: AppTextField(
-                    cursorColor: const Color(0xff000000),
+                    cursorColor: Colors.grey,
                     textEditingController: emailController,
                     textinputAction: TextInputAction.next,
                     keyBoardType: TextInputType.emailAddress,
-                    hintText: "Enter email or phone",
+                    hintText: "Email",
                     validator: (val) {
                       if (val == null || val.isEmpty) {
                         return "Please enter email";
@@ -78,7 +71,7 @@ class _SignInScreenState extends State<SignInScreen> {
                   child: AppTextField(
                     autoCorrect: true,
                     obscureText: _obscureText,
-                    cursorColor: const Color(0xff000000),
+                    cursorColor: Colors.grey,
                     textEditingController: passController,
                     textinputAction: TextInputAction.done,
                     keyBoardType: TextInputType.visiblePassword,
@@ -111,7 +104,7 @@ class _SignInScreenState extends State<SignInScreen> {
                   width: MediaQuery.of(context).size.width * .350,
                   child: AppButton(
                     onPressed: onSignIn,
-                    text: "Sign In",
+                    text: "Sign in",
                   ),
                 ),
               ],

@@ -48,13 +48,23 @@ class DefaultFirebaseOptions {
         );
     }
   }
-
+  static const FirebaseOptions web = FirebaseOptions(
+    apiKey: 'AIzaSyDvKaqAh2W0KVlvz_eYu0MqqCOyj0dHJXM',
+    appId: '1:1068062627965:web:82195ba02d17cf6b9c3914',
+    messagingSenderId: '1068062627965',
+    projectId: 'eurosom-5bd44',
+    authDomain: 'eurosom-5bd44.firebaseapp.com',
+    databaseURL:
+    'https://flutterfire-e2e-tests-default-rtdb.europe-west1.firebasedatabase.app',
+    storageBucket: 'eurosom-5bd44.appspot.com',
+    measurementId: 'G-JN95N1JV2E',
+  );
   static const FirebaseOptions android = FirebaseOptions(
-    apiKey: 'AIzaSyBbCpZya1HNKjKy1NmaQtAAhXcQ7F3Xt_M',
-    appId: '1:152824763325:android:7475ad41af4648de75f8d4',
-    messagingSenderId: '152824763325',
-    projectId: 'chat-demo-f115e',
-    storageBucket: 'chat-demo-f115e.appspot.com',
+    apiKey: 'AIzaSyAB5krclnShYGOe0YBqjWvPPbUL3UnzWTo',
+    appId: '1:232305822061:android:7cd190c55d46b6119ef264',
+    messagingSenderId: '232305822061',
+    projectId: 'os-muslim-assistant',
+    storageBucket: 'os-muslim-assistant.appspot.com',
   );
 
   static const FirebaseOptions ios = FirebaseOptions(
@@ -63,8 +73,7 @@ class DefaultFirebaseOptions {
     messagingSenderId: '232305822061',
     projectId: 'os-muslim-assistant',
     storageBucket: 'os-muslim-assistant.appspot.com',
-    iosClientId:
-        '232305822061-em5orrtvnn1cuf3ve181aqu6ae0rceo5.apps.googleusercontent.com',
+    iosClientId: '232305822061-em5orrtvnn1cuf3ve181aqu6ae0rceo5.apps.googleusercontent.com',
     iosBundleId: 'com.ninetyplus.muslim',
   );
 }

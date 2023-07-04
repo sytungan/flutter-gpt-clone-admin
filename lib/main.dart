@@ -1,14 +1,12 @@
+import 'package:eurosom_admin/firebase_options.dart';
 import 'package:eurosom_admin/home/home_page.dart';
 import 'package:eurosom_admin/signin/signin_screen.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 
-import 'firebase_options.dart';
-
 void main() async {
-  await Firebase.initializeApp(
-    options: DefaultFirebaseOptions.currentPlatform,
-  );
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.web);
   runApp(const MyApp());
 }
 
