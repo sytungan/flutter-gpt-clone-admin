@@ -7,13 +7,13 @@ class AppTextField extends StatelessWidget {
   final bool obscureText;
   final Color? suffixIconColor;
   final bool? enabled;
-  final String? Function(String?)? onsaved;
-  final String? Function(String?)? onchange;
+  final String? Function(String?)? onSaved;
+  final String? Function(String?)? onChange;
   // final String obscureSize;
   final bool? autoCorrect;
   final Color? focusColor;
-  final TextInputAction? textinputAction;
-  final TextEditingController? textEditingController;
+  final TextInputAction? textInputAction;
+  final TextEditingController? controller;
   final TextInputType? keyBoardType;
   final String? Function(String?)? validator;
 
@@ -21,8 +21,8 @@ class AppTextField extends StatelessWidget {
     super.key,
     this.hintText,
     this.suffixIcon,
-    this.textinputAction,
-    this.textEditingController,
+    this.textInputAction,
+    this.controller,
     this.keyBoardType,
     this.validator,
     this.obscureText = false,
@@ -30,24 +30,24 @@ class AppTextField extends StatelessWidget {
     this.focusColor,
     this.autoCorrect,
     this.cursorColor,
-    this.onsaved,
+    this.onSaved,
     this.enabled,
-    this.onchange,
+    this.onChange,
     // this.obscureSize = '.',
   });
 
   @override
   Widget build(BuildContext context) {
     return TextFormField(
-      onChanged: onchange,
+      onChanged: onChange,
       enabled: enabled,
       validator: validator,
-      onSaved: onsaved,
+      onSaved: onSaved,
       cursorColor: cursorColor,
       autocorrect: true,
       keyboardType: keyBoardType,
-      textInputAction: textinputAction,
-      controller: textEditingController,
+      textInputAction: textInputAction,
+      controller: controller,
       obscureText: obscureText,
       decoration: InputDecoration(
         suffixIcon: suffixIcon,

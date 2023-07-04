@@ -1,70 +1,149 @@
+import 'package:eurosom_admin/controller/firestore_controller.dart';
+import 'package:eurosom_admin/home/widget/update_token_dialog.dart';
+import 'package:eurosom_admin/model/user_model.dart';
+import 'package:eurosom_admin/res/theme_color.dart';
+import 'package:eurosom_admin/shimmers/app_shimmer.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
-class HomePage extends StatelessWidget {
+class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
+
+  @override
+  State<HomePage> createState() => _HomePageState();
+}
+
+class _HomePageState extends State<HomePage> {
+  final controller = Get.put(FirestoreController());
+
+  @override
+  void initState() {
+    super.initState();
+    controller.fetchUsers();
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Padding(
+      body: Obx(
+        () => controller.isLoading.value
+            ? const Center(
+                child: AppShimmer(),
+              )
+            : buildBody(),
+      ),
+    );
+  }
+
+  _showDialog(UserModel user) {
+    showDialog(
+      barrierDismissible: true,
+      context: context,
+      useSafeArea: true,
+      builder: (context) => UpdateTokenDialog(user: user),
+    );
+  }
+
+  buildBody() {
+    if (controller.users.isNotEmpty) {
+      return Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
           children: [
-            Row(
+            const Row(
+              crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                InkWell(
-                  onTap: () {},
-                  child: const Text('Sr.no'),
-                ),
-                const Spacer(),
-                InkWell(
-                  onTap: () {},
-                  child: const Text('Name'),
-                ),
-                const Spacer(),
-                InkWell(
-                  onTap: () {},
-                  child: const Text('Email'),
-                ),
-                const Spacer(),
-                InkWell(
-                  onTap: () {},
-                  child: const Text('Phone'),
-                ),
-                const Spacer(),
-                InkWell(
-                  onTap: () {},
-                  child: const Text('Remin Token'),
-                ),
-                const Spacer(),
-                InkWell(
-                  onTap: () {},
-                  child: const Text('Actions'),
-                ),
+                SizedBox(width: 80, child: Text('Sr. No', textAlign: TextAlign.center)),
+                Expanded(child: Text('Name', textAlign: TextAlign.center)),
+                Expanded(flex: 2, child: Text('Email', textAlign: TextAlign.center)),
+                SizedBox(width: 24),
+                Expanded(child: Text('Phone', textAlign: TextAlign.center)),
+                Expanded(child: Text('Remaining Tokens', textAlign: TextAlign.center)),
+                SizedBox(width: 24),
+                Expanded(child: Text('Actions', textAlign: TextAlign.center)),
               ],
             ),
-            const SizedBox(
-              height: 16,
-            ),
-            ListView.builder(
-              shrinkWrap: true,
-              itemCount: 10,
-              itemBuilder: (context, index) {
-                return InkWell(
-                  onTap: () {},
-                  child: Container(
-                    margin: const EdgeInsets.only(bottom: 10),
-                    height: 30,
-                    decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(16), color: Colors.blue[50]),
-                    // color: Color(0xff004D81),
-                  ),
-                );
-              },
+            const SizedBox(height: 16),
+            Expanded(
+              child: ListView.builder(
+                shrinkWrap: true,
+                padding: const EdgeInsets.symmetric(vertical: 8),
+                itemCount: controller.users.length,
+                itemBuilder: (context, index) {
+                  return InkWell(
+                    onTap: () {},
+                    child: Container(
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(6),
+                        color: index % 2 == 0 ? Colors.blue.withOpacity(.06) : null,
+                      ),
+                      child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Row(
+                          children: [
+                            SizedBox(
+                              width: 80,
+                              child: Text(
+                                "${controller.index.value = index}",
+                                textAlign: TextAlign.start,
+                                style: const TextStyle(color: AppColor.black),
+                              ),
+                            ),
+                            Expanded(
+                              child: Text(
+                                controller.users[index].username ?? '',
+                                textAlign: TextAlign.start,
+                                style: const TextStyle(color: AppColor.black),
+                              ),
+                            ),
+                            Expanded(
+                              flex: 2,
+                              child: Text(
+                                controller.users[index].useremail ?? '',
+                                textAlign: TextAlign.start,
+                                style: const TextStyle(color: AppColor.black),
+                              ),
+                            ),
+                            const SizedBox(width: 24),
+                            Expanded(
+                              child: Text(
+                                "${controller.users[index].phone}",
+                                textAlign: TextAlign.center,
+                                style: const TextStyle(color: AppColor.black),
+                              ),
+                            ),
+                            Expanded(
+                              child: Text(
+                                "${controller.users[index].tokens}",
+                                textAlign: TextAlign.center,
+                                style: const TextStyle(color: AppColor.black),
+                              ),
+                            ),
+                            const SizedBox(width: 24),
+                            Expanded(
+                              child: ElevatedButton(
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: AppColor.themeColor,
+                                  foregroundColor: AppColor.white,
+                                ),
+                                onPressed: () {
+                                  _showDialog(controller.users[index]);
+                                },
+                                child: const Text("UPDATE TOKEN"),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      // color: Color(0xff004D81),
+                    ),
+                  );
+                },
+              ),
             ),
           ],
         ),
-      ),
-    );
+      );
+    }
   }
 }

@@ -1,0 +1,50 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:eurosom_admin/model/user_model.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:get/get.dart';
+
+class FirestoreController extends GetxController {
+  final users = <UserModel>[].obs;
+  final isLoading = true.obs;
+  final index = 0.obs;
+  final currentPlan = '0'.obs;
+  final selectedTokens = '300'.obs;
+
+  void checkRadio(String value) {
+    currentPlan.value = value;
+  }
+
+  final _db = FirebaseFirestore.instance;
+  final String _collectionAdmin = "admin";
+  final String _collectionUser = "users";
+
+  addAdmin(
+    String email,
+    String password,
+  ) {
+    final admin = FirebaseAuth.instance.currentUser;
+    _db
+        .collection(_collectionAdmin)
+        .doc(admin!.email)
+        .set({"useremail": email, "password": password});
+  }
+
+  fetchUsers() async {
+    isLoading(true);
+    final querySnap = await _db.collection(_collectionUser).get();
+    final list = List<UserModel>.from(
+      querySnap.docs.map((e) => UserModel.fromJson(e.data())),
+    );
+    users.clear();
+    users.addAll(list);
+    isLoading(false);
+    print('SUCCESS ::::${users.length}');
+  }
+
+  Future<void> updateTokenForUser(UserModel user) async {
+    await _db.collection(_collectionUser).doc(user.id).update({"tokens": selectedTokens.value});
+    selectedTokens.value = '';
+    fetchUsers();
+  }
+}

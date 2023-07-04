@@ -26,23 +26,24 @@ class UserModel {
       this.remin,
       this.tokens});
 
-  factory UserModel.tojson(Map<String, dynamic> json) {
+  factory UserModel.fromJson(Map<String, dynamic> json) {
     return UserModel(
-        messages: json["messages"],
-        id: json["id"],
-        useremail: json["useremail"],
-        phone: json["phone"],
-        username: json["username"],
-        ref: json['ref'],
-        password: json["password"],
-        purchased: json['purchased'],
-        tokens: json['tokens'],
-        remin: json['remain'],
-        timeagoe: json["timeagoe"],
-        package: json['package']);
+      messages: json["messages"]??'',
+      id: json["id"],
+      useremail: json["useremail"]??'',
+      phone: json["phone"]??'',
+      username: json["username"],
+      ref: json['ref'],
+      password: json["password"],
+      purchased: json['purchased'],
+      tokens: json['tokens']??'0',
+      remin: json['remain']??0,
+      timeagoe: json["timeagoe"],
+      package: json['package'].toString(),
+    );
   }
 
-  Map<String, dynamic> fromjson() => {
+  Map<String, dynamic> toJson() => {
         "username": username,
         "messages": messages,
         "useremail": useremail,

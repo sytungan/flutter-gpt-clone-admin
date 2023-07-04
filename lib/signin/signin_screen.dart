@@ -1,4 +1,7 @@
+import 'package:eurosom_admin/controller/firestore_controller.dart';
 import 'package:eurosom_admin/home/home_page.dart';
+import 'package:eurosom_admin/signin/controller/signin_controller.dart';
+import 'package:eurosom_admin/utils/app_prefs.dart';
 import 'package:eurosom_admin/utils/component/app_button.dart';
 import 'package:eurosom_admin/utils/component/app_textfeild.dart';
 import 'package:flutter/material.dart';
@@ -16,14 +19,29 @@ class _SignInScreenState extends State<SignInScreen> {
   final passController = TextEditingController();
   bool _obscureText = true;
   final emailRegex = RegExp(r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+");
-  final passRegex = RegExp(r'^(?=.?[A-Z])(?=.?[a-z])(?=.?[0-9])(?=.?[!@#&*~]).{8,}$');
+  final passRegex = RegExp(r'^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[!@#\$&*~]).{8,}$');
 
   void onSignIn() {
     if (formKey.currentState != null && formKey.currentState!.validate()) {
-      Navigator.of(context).push(
-        MaterialPageRoute(
-          builder: (context) => const HomePage(),
-        ),
+      LoginController().loginUser(
+        email: emailController.text,
+        password: passController.text,
+        onSuccess: () {
+          AppPref().isSetLogin(true);
+          FirestoreController().addAdmin(emailController.text, passController.text);
+          Navigator.of(context).pushReplacement(
+            MaterialPageRoute(
+              builder: (context) => HomePage(),
+            ),
+          );
+        },
+        onFailure: (error) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(error),
+            ),
+          );
+        },
       );
     }
   }
@@ -37,10 +55,11 @@ class _SignInScreenState extends State<SignInScreen> {
           key: formKey,
           child: Center(
             child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 const Image(
                   image: AssetImage("assets/ic_logo.png"),
-                  height: 75,
+                  height: 130,
                 ),
                 const Text(
                   "Sign in",
@@ -51,8 +70,8 @@ class _SignInScreenState extends State<SignInScreen> {
                   width: MediaQuery.of(context).size.width * .350,
                   child: AppTextField(
                     cursorColor: Colors.grey,
-                    textEditingController: emailController,
-                    textinputAction: TextInputAction.next,
+                    controller: emailController,
+                    textInputAction: TextInputAction.next,
                     keyBoardType: TextInputType.emailAddress,
                     hintText: "Email",
                     validator: (val) {
@@ -72,8 +91,8 @@ class _SignInScreenState extends State<SignInScreen> {
                     autoCorrect: true,
                     obscureText: _obscureText,
                     cursorColor: Colors.grey,
-                    textEditingController: passController,
-                    textinputAction: TextInputAction.done,
+                    controller: passController,
+                    textInputAction: TextInputAction.done,
                     keyBoardType: TextInputType.visiblePassword,
                     hintText: "Password",
                     validator: (value) {
@@ -81,8 +100,6 @@ class _SignInScreenState extends State<SignInScreen> {
                         return "Please Enter password";
                       } else if (!passRegex.hasMatch(value)) {
                         return "Enter valid password";
-                      } else if (value.length < 6) {
-                        return "Password must be five character";
                       }
                       return null;
                     },
