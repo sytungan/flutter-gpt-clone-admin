@@ -1,23 +1,24 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:eurosom_admin/model/user_model.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 class FirestoreController extends GetxController {
   final users = <UserModel>[].obs;
+  final tmpUsers = <UserModel>[].obs;
   final isLoading = true.obs;
-  final index = 0.obs;
   final currentPlan = '0'.obs;
   final selectedTokens = '300'.obs;
-
-  void checkRadio(String value) {
-    currentPlan.value = value;
-  }
+  final nameController = TextEditingController().obs;
 
   final _db = FirebaseFirestore.instance;
   final String _collectionAdmin = "admin";
   final String _collectionUser = "users";
+
+  void checkRadio(String value) {
+    currentPlan.value = value;
+  }
 
   addAdmin(
     String email,
@@ -38,6 +39,8 @@ class FirestoreController extends GetxController {
     );
     users.clear();
     users.addAll(list);
+    tmpUsers.clear();
+    tmpUsers.addAll(list);
     isLoading(false);
     print('SUCCESS ::::${users.length}');
   }
@@ -46,5 +49,17 @@ class FirestoreController extends GetxController {
     await _db.collection(_collectionUser).doc(user.id).update({"tokens": selectedTokens.value});
     selectedTokens.value = '';
     fetchUsers();
+  }
+
+  searchUser(String query) {
+    final searchUserList = tmpUsers.where(
+      (element) =>
+          element.username!.toLowerCase().contains(query.toLowerCase()) ||
+          element.useremail!.toLowerCase().contains(query.toLowerCase()) ||
+          (element.phone ?? '').toLowerCase().contains(query.toLowerCase()),
+    );
+    users.clear();
+    users.addAll(searchUserList);
+    print('SEARCH LIST ::: ${searchUserList.length}');
   }
 }

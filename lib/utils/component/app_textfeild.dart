@@ -1,20 +1,25 @@
+import 'package:eurosom_admin/res/theme_color.dart';
 import 'package:flutter/material.dart';
 
 class AppTextField extends StatelessWidget {
   final String? hintText;
   final Color? cursorColor;
+  final Widget? prefixIcon;
   final Widget? suffixIcon;
   final bool obscureText;
   final Color? suffixIconColor;
   final bool? enabled;
-  final String? Function(String?)? onSaved;
-  final String? Function(String?)? onChange;
+  final Function(String?)? onSaved;
+  final Function(String)? onChange;
+
   // final String obscureSize;
   final bool? autoCorrect;
   final Color? focusColor;
   final TextInputAction? textInputAction;
   final TextEditingController? controller;
   final TextInputType? keyBoardType;
+  final TextStyle? style;
+  final TextStyle? hintStyle;
   final String? Function(String?)? validator;
 
   const AppTextField({
@@ -33,6 +38,9 @@ class AppTextField extends StatelessWidget {
     this.onSaved,
     this.enabled,
     this.onChange,
+    this.style,
+    this.hintStyle,
+    this.prefixIcon,
     // this.obscureSize = '.',
   });
 
@@ -49,7 +57,13 @@ class AppTextField extends StatelessWidget {
       textInputAction: textInputAction,
       controller: controller,
       obscureText: obscureText,
+      style: style ??
+          const TextStyle(
+            fontSize: 12,
+            fontWeight: FontWeight.w400,
+          ),
       decoration: InputDecoration(
+        prefixIcon: prefixIcon,
         suffixIcon: suffixIcon,
         suffixIconColor: suffixIconColor,
         focusColor: focusColor,
@@ -60,14 +74,15 @@ class AppTextField extends StatelessWidget {
           ),
           borderSide: BorderSide(
             width: 1,
-            color: Colors.blue,
+            color: AppColor.themeColor,
           ),
         ),
         contentPadding: const EdgeInsets.all(14),
-        hintStyle: const TextStyle(
-          fontSize: 12,
-          fontWeight: FontWeight.w400,
-        ),
+        hintStyle: hintStyle ??
+            const TextStyle(
+              fontSize: 12,
+              fontWeight: FontWeight.w400,
+            ),
         border: const OutlineInputBorder(
           borderRadius: BorderRadius.all(
             Radius.circular(8),

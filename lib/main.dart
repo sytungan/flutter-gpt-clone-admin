@@ -1,6 +1,4 @@
 import 'package:eurosom_admin/firebase_options.dart';
-import 'package:eurosom_admin/home/home_page.dart';
-import 'package:eurosom_admin/signin/signin_screen.dart';
 import 'package:eurosom_admin/splash_screen.dart';
 import 'package:eurosom_admin/utils/app_prefs.dart';
 import 'package:firebase_core/firebase_core.dart';

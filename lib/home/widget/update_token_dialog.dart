@@ -90,7 +90,7 @@ class UpdateTokenDialog extends StatelessWidget {
                       hintText: "Please enter tokens",
                       keyBoardType: TextInputType.number,
                       onChange: (v) {
-                        controller.selectedTokens.value = v ?? '';
+                        controller.selectedTokens.value = v;
                       },
                     ),
                   )
