@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:eurosom_admin/model/user_model.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -42,7 +44,7 @@ class FirestoreController extends GetxController {
     tmpUsers.clear();
     tmpUsers.addAll(list);
     isLoading(false);
-    print('SUCCESS ::::${users.length}');
+    print('SUCCESS ::::${json.encode(list)}');
   }
 
   Future<void> updateTokenForUser(UserModel user) async {
@@ -54,8 +56,8 @@ class FirestoreController extends GetxController {
   searchUser(String query) {
     final searchUserList = tmpUsers.where(
       (element) =>
-          element.username!.toLowerCase().contains(query.toLowerCase()) ||
-          element.useremail!.toLowerCase().contains(query.toLowerCase()) ||
+          (element.username ?? '').toLowerCase().contains(query.toLowerCase()) ||
+          (element.useremail ?? '').toLowerCase().contains(query.toLowerCase()) ||
           (element.phone ?? '').toLowerCase().contains(query.toLowerCase()),
     );
     users.clear();

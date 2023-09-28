@@ -1,3 +1,4 @@
+import 'package:click_to_copy/click_to_copy.dart';
 import 'package:eurosom_admin/controller/firestore_controller.dart';
 import 'package:eurosom_admin/home/widget/update_token_dialog.dart';
 import 'package:eurosom_admin/model/user_model.dart';
@@ -26,43 +27,45 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Obx(
-        () => controller.isLoading.value
-            ? const Center(
-                child: AppShimmer(),
-              )
-            : Column(
-                children: [
-                  const SizedBox(height: 24),
-                  SizedBox(
-                    width: Get.width * .50,
-                    child: Obx(
-                      () => AppTextField(
-                        prefixIcon: Icon(
-                          Icons.search,
-                          color: Colors.grey.shade400,
+    return SelectionArea(
+      child: Scaffold(
+        body: Obx(
+          () => controller.isLoading.value
+              ? const Center(
+                  child: AppShimmer(),
+                )
+              : Column(
+                  children: [
+                    const SizedBox(height: 24),
+                    SizedBox(
+                      width: Get.width * .50,
+                      child: Obx(
+                        () => AppTextField(
+                          prefixIcon: Icon(
+                            Icons.search,
+                            color: Colors.grey.shade400,
+                          ),
+                          onChange: (value) {
+                            controller.searchUser(value);
+                          },
+                          controller: controller.nameController.value,
+                          cursorColor: AppColor.themeColor,
+                          hintText: 'Search..',
+                          style: Theme.of(context)
+                              .textTheme
+                              .bodyMedium
+                              ?.copyWith(color: AppColor.themeColor),
+                          hintStyle: Theme.of(context)
+                              .textTheme
+                              .bodyMedium
+                              ?.copyWith(color: Colors.grey.shade400),
                         ),
-                        onChange: (value) {
-                          controller.searchUser(value);
-                        },
-                        controller: controller.nameController.value,
-                        cursorColor: AppColor.themeColor,
-                        hintText: 'Search..',
-                        style: Theme.of(context)
-                            .textTheme
-                            .bodyMedium
-                            ?.copyWith(color: AppColor.themeColor),
-                        hintStyle: Theme.of(context)
-                            .textTheme
-                            .bodyMedium
-                            ?.copyWith(color: Colors.grey.shade400),
                       ),
                     ),
-                  ),
-                  Expanded(child: buildBody()),
-                ],
-              ),
+                    Expanded(child: buildBody()),
+                  ],
+                ),
+        ),
       ),
     );
   }
@@ -91,11 +94,12 @@ class _HomePageState extends State<HomePage> {
                   SizedBox(width: 80, child: Text('Sr. No', textAlign: TextAlign.start)),
                   Expanded(child: Text('Name', textAlign: TextAlign.start)),
                   Expanded(flex: 2, child: Text('Email', textAlign: TextAlign.start)),
-                  SizedBox(width: 24),
-                  Expanded(child: Text('Phone', textAlign: TextAlign.center)),
+                  Expanded(flex: 2, child: Text('Phone', textAlign: TextAlign.center)),
                   Expanded(child: Text('Remaining Tokens', textAlign: TextAlign.center)),
-                  SizedBox(width: 24),
+                  Expanded(child: Text('Date Time', textAlign: TextAlign.center)),
+                  SizedBox(width: 20),
                   Expanded(child: Text('Actions', textAlign: TextAlign.center)),
+                  SizedBox(width: 10),
                 ],
               ),
             ),
@@ -105,82 +109,113 @@ class _HomePageState extends State<HomePage> {
                 () => ListView.builder(
                   shrinkWrap: true,
                   padding: const EdgeInsets.symmetric(vertical: 8),
-                  itemCount:
-                      controller.users.length,
+                  itemCount: controller.users.length,
                   itemBuilder: (context, index) {
-                    return InkWell(
-                      onTap: () {},
-                      child: Container(
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(6),
-                          color: index % 2 == 0 ? Colors.blue.withOpacity(.06) : null,
-                        ),
-                        child: Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Row(
-                            children: [
-                              SizedBox(
-                                width: 80,
-                                child: Text(
-                                  "${index+1}",
-                                  textAlign: TextAlign.start,
-                                  style: const TextStyle(color: AppColor.black),
-                                ),
+                    return Container(
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(6),
+                        color: index % 2 == 0 ? Colors.blue.withOpacity(.06) : null,
+                      ),
+                      child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Row(
+                          children: [
+                            SizedBox(
+                              width: 80,
+                              child: Text(
+                                "${index + 1}",
+                                textAlign: TextAlign.start,
+                                style: const TextStyle(color: AppColor.black),
                               ),
-                              Expanded(
-                                child: Text(
-                                  controller.users[index].username ?? '',
-                                  textAlign: TextAlign.start,
-                                  style: const TextStyle(color: AppColor.black),
-                                ),
+                            ),
+                            Expanded(
+                              child: Text(
+                                controller.users[index].username ?? '',
+                                textAlign: TextAlign.start,
+                                style: const TextStyle(color: AppColor.black),
                               ),
-                              Expanded(
-                                flex: 2,
-                                child: Text(
-                                  controller.users[index].useremail ?? '',
-                                  textAlign: TextAlign.start,
-                                  style: const TextStyle(color: AppColor.black),
-                                ),
+                            ),
+                            Expanded(
+                              flex: 2,
+                              child: Row(
+                                children: [
+                                  Expanded(
+                                    child: Text(
+                                      controller.users[index].useremail ?? '',
+                                      textAlign: TextAlign.start,
+                                      style: const TextStyle(color: AppColor.black),
+                                      overflow: TextOverflow.ellipsis,
+                                    ),
+                                  ),
+                                  const SizedBox(width: 6),
+                                  InkWell(
+                                    onTap: () async {
+                                      await ClickToCopy.copy(controller.users[index].useremail!)
+                                          .then(
+                                        (value) => ScaffoldMessenger.of(context).showSnackBar(
+                                          const SnackBar(
+                                            content: Text('Copied!'),
+                                          ),
+                                        ),
+                                      );
+                                    },
+                                    child: controller.users[index].useremail!.isNotEmpty
+                                        ? const Icon(Icons.copy_outlined, size: 16)
+                                        : const SizedBox.shrink(),
+                                  )
+                                ],
                               ),
-                              const SizedBox(width: 24),
-                              Expanded(
-                                child: Text(
-                                  "${controller.users[index].phone}",
-                                  textAlign: TextAlign.center,
-                                  style: const TextStyle(color: AppColor.black),
-                                ),
+                            ),
+                            Expanded(
+                              child: Row(
+                                children: [
+                                  Text(
+                                    "${controller.users[index].phone}",
+                                    textAlign: TextAlign.center,
+                                    style: const TextStyle(color: AppColor.black),
+                                  ),
+                                  const SizedBox(width: 6),
+                                  InkWell(
+                                    onTap: () async {
+                                      await ClickToCopy.copy(controller.users[index].phone!).then(
+                                        (value) => ScaffoldMessenger.of(context).showSnackBar(
+                                          const SnackBar(content: Text('Copied!')),
+                                        ),
+                                      );
+                                    },
+                                    child: controller.users[index].phone!.isNotEmpty
+                                        ? const Icon(Icons.copy_outlined, size: 16)
+                                        : const SizedBox.shrink(),
+                                  )
+                                ],
                               ),
-                              Expanded(
-                                child: Text(
-                                  "${controller.users[index].tokens}",
-                                  textAlign: TextAlign.center,
-                                  style: const TextStyle(color: AppColor.black),
-                                ),
+                            ),
+                            const SizedBox(width: 10),
+                            Expanded(
+                              child: Text(
+                                "${controller.users[index].tokens}",
+                                textAlign: TextAlign.center,
+                                style: const TextStyle(color: AppColor.black),
                               ),
-                              const SizedBox(width: 24),
-                              Expanded(
-                                  child: AppButton(
+                            ),
+                            const SizedBox(width: 16),
+                            Expanded(
+                              child: Text(
+                                "${controller.users[index].timeagoe}",
+                                textAlign: TextAlign.center,
+                                style: const TextStyle(color: AppColor.black),
+                              ),
+                            ),
+                            Expanded(
+                              child: AppButton(
                                 text: "UPDATE TOKEN",
                                 onPressed: () {
                                   _showDialog(controller.users[index]);
                                 },
-                              )),
-                              // Expanded(
-                              //   child: ElevatedButton(
-                              //     style: ElevatedButton.styleFrom(
-                              //       backgroundColor: AppColor.themeColor,
-                              //       foregroundColor: AppColor.white,
-                              //     ),
-                              //     onPressed: () {
-                              //       _showDialog(controller.users[index]);
-                              //     },
-                              //     child: const Text("UPDATE TOKEN"),
-                              //   ),
-                              // ),
-                            ],
-                          ),
+                              ),
+                            ),
+                          ],
                         ),
-                        // color: Color(0xff004D81),
                       ),
                     );
                   },

@@ -5,6 +5,7 @@ import 'package:eurosom_admin/utils/app_prefs.dart';
 import 'package:eurosom_admin/utils/component/app_button.dart';
 import 'package:eurosom_admin/utils/component/app_textfeild.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 class SignInScreen extends StatefulWidget {
   const SignInScreen({Key? key}) : super(key: key);
@@ -49,83 +50,82 @@ class _SignInScreenState extends State<SignInScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Padding(
+      body: Container(
         padding: const EdgeInsets.all(25),
+        width: Get.width,
         child: Form(
           key: formKey,
-          child: Center(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                const Image(
-                  image: AssetImage("assets/ic_logo.png"),
-                  height: 130,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              const Image(
+                image: AssetImage("assets/ic_logo.png"),
+                height: 130,
+              ),
+              const Text(
+                "Sign in",
+                style: TextStyle(color: Colors.black, fontSize: 25, fontWeight: FontWeight.w600),
+              ),
+              const SizedBox(height: 25),
+              SizedBox(
+                width: MediaQuery.of(context).size.width * .350,
+                child: AppTextField(
+                  cursorColor: Colors.grey,
+                  controller: emailController,
+                  textInputAction: TextInputAction.next,
+                  keyBoardType: TextInputType.emailAddress,
+                  hintText: "Email",
+                  validator: (val) {
+                    if (val == null || val.isEmpty) {
+                      return "Please enter email";
+                    } else if (!emailRegex.hasMatch(val)) {
+                      return "Enter valid email";
+                    }
+                    return null;
+                  },
                 ),
-                const Text(
-                  "Sign in",
-                  style: TextStyle(color: Colors.black, fontSize: 25, fontWeight: FontWeight.w600),
-                ),
-                const SizedBox(height: 25),
-                SizedBox(
-                  width: MediaQuery.of(context).size.width * .350,
-                  child: AppTextField(
-                    cursorColor: Colors.grey,
-                    controller: emailController,
-                    textInputAction: TextInputAction.next,
-                    keyBoardType: TextInputType.emailAddress,
-                    hintText: "Email",
-                    validator: (val) {
-                      if (val == null || val.isEmpty) {
-                        return "Please enter email";
-                      } else if (!emailRegex.hasMatch(val)) {
-                        return "Enter valid email";
-                      }
-                      return null;
+              ),
+              const SizedBox(height: 15),
+              SizedBox(
+                width: MediaQuery.of(context).size.width * .350,
+                child: AppTextField(
+                  autoCorrect: true,
+                  obscureText: _obscureText,
+                  cursorColor: Colors.grey,
+                  controller: passController,
+                  textInputAction: TextInputAction.done,
+                  keyBoardType: TextInputType.visiblePassword,
+                  hintText: "Password",
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return "Please Enter password";
+                    } else if (!passRegex.hasMatch(value)) {
+                      return "Enter valid password";
+                    }
+                    return null;
+                  },
+                  suffixIcon: InkWell(
+                    onTap: () {
+                      setState(() {
+                        _obscureText = !_obscureText;
+                      });
                     },
-                  ),
-                ),
-                const SizedBox(height: 15),
-                SizedBox(
-                  width: MediaQuery.of(context).size.width * .350,
-                  child: AppTextField(
-                    autoCorrect: true,
-                    obscureText: _obscureText,
-                    cursorColor: Colors.grey,
-                    controller: passController,
-                    textInputAction: TextInputAction.done,
-                    keyBoardType: TextInputType.visiblePassword,
-                    hintText: "Password",
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return "Please Enter password";
-                      } else if (!passRegex.hasMatch(value)) {
-                        return "Enter valid password";
-                      }
-                      return null;
-                    },
-                    suffixIcon: InkWell(
-                      onTap: () {
-                        setState(() {
-                          _obscureText = !_obscureText;
-                        });
-                      },
-                      child: Icon(
-                        _obscureText ? Icons.visibility_off : Icons.visibility,
-                        color: const Color(0xff8B8B8B),
-                      ),
+                    child: Icon(
+                      _obscureText ? Icons.visibility_off : Icons.visibility,
+                      color: const Color(0xff8B8B8B),
                     ),
                   ),
                 ),
-                const SizedBox(height: 15),
-                SizedBox(
-                  width: MediaQuery.of(context).size.width * .350,
-                  child: AppButton(
-                    onPressed: onSignIn,
-                    text: "Sign in",
-                  ),
+              ),
+              const SizedBox(height: 15),
+              SizedBox(
+                width: MediaQuery.of(context).size.width * .350,
+                child: AppButton(
+                  onPressed: onSignIn,
+                  text: "Sign in",
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
         ),
       ),

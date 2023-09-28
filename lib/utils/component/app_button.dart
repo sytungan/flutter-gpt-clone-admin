@@ -24,14 +24,14 @@ class AppButton extends StatelessWidget {
           ),
           backgroundColor: MaterialStateProperty.all(const Color(0xff004D81)),
           minimumSize: MaterialStateProperty.all(
-            Size(MediaQuery.of(context).size.width, 35),
+            Size(MediaQuery.of(context).size.width, 56),
           ),
         ),
         onPressed: onPressed,
         child: Text(
           text!,
           style:
-              const TextStyle(fontSize: 14, fontWeight: FontWeight.w700, color: Color(0xffFFFFFF)),
+              const TextStyle(fontSize: 12, fontWeight: FontWeight.w700, color: Color(0xffFFFFFF)),
         ),
       ),
     );
