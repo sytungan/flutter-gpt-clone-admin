@@ -43,8 +43,9 @@ class FirestoreController extends GetxController {
     users.addAll(list);
     tmpUsers.clear();
     tmpUsers.addAll(list);
+    tmpUsers.sort((a, b) => b.purchased!.toString().compareTo(a.purchased.toString()),);
     isLoading(false);
-    print('SUCCESS ::::${json.encode(list)}');
+    print('SUCCESS ::::${json.encode(tmpUsers)}');
   }
 
   Future<void> updateTokenForUser(UserModel user) async {

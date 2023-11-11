@@ -98,6 +98,8 @@ class _HomePageState extends State<HomePage> {
                   Expanded(child: Text('Remaining Tokens', textAlign: TextAlign.center)),
                   Expanded(child: Text('Date Time', textAlign: TextAlign.center)),
                   SizedBox(width: 20),
+                  Expanded(child: Text('Status', textAlign: TextAlign.center)),
+                  SizedBox(width: 20),
                   Expanded(child: Text('Actions', textAlign: TextAlign.center)),
                   SizedBox(width: 10),
                 ],
@@ -166,13 +168,16 @@ class _HomePageState extends State<HomePage> {
                                 ],
                               ),
                             ),
+                            const SizedBox(width: 4),
                             Expanded(
                               child: Row(
                                 children: [
-                                  Text(
-                                    "${controller.users[index].phone}",
-                                    textAlign: TextAlign.center,
-                                    style: const TextStyle(color: AppColor.black),
+                                  Expanded(
+                                    child: Text(
+                                      "${controller.users[index].phone}",
+                                      textAlign: TextAlign.center,
+                                      style: const TextStyle(color: AppColor.black),
+                                    ),
                                   ),
                                   const SizedBox(width: 6),
                                   InkWell(
@@ -205,6 +210,15 @@ class _HomePageState extends State<HomePage> {
                                 textAlign: TextAlign.center,
                                 style: const TextStyle(color: AppColor.black),
                               ),
+                            ),
+                            Expanded(
+                              child: controller.users[index].purchased == true
+                                  ? const Text(
+                                      "Purchased",
+                                      textAlign: TextAlign.center,
+                                      style: TextStyle(color: Colors.green),
+                                    )
+                                  : const SizedBox.shrink(),
                             ),
                             Expanded(
                               child: AppButton(
