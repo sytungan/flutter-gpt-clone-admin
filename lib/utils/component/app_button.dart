@@ -30,8 +30,12 @@ class AppButton extends StatelessWidget {
         onPressed: onPressed,
         child: Text(
           text!,
-          style:
-              const TextStyle(fontSize: 10, fontWeight: FontWeight.w700, color: Color(0xffFFFFFF)),
+          textAlign: TextAlign.center,
+          style: const TextStyle(
+            fontSize: 10,
+            fontWeight: FontWeight.w700,
+            color: Color(0xffFFFFFF),
+          ),
         ),
       ),
     );

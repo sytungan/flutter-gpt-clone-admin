@@ -6,38 +6,45 @@ class UserModel {
   String? id;
   String? ref;
   bool? purchased;
+  bool? isMonthly;
+  String? purchasedAt;
   String? tokens;
   String? timeagoe;
   String? package;
   String? messages;
   int? remin;
 
-  UserModel(
-      {this.useremail,
-      this.messages,
-      this.username,
-      this.phone,
-      this.id,
-      this.ref,
-      this.password,
-      this.package,
-      this.purchased,
-      this.timeagoe,
-      this.remin,
-      this.tokens});
+  UserModel({
+    this.useremail,
+    this.messages,
+    this.username,
+    this.phone,
+    this.id,
+    this.ref,
+    this.password,
+    this.package,
+    this.isMonthly,
+    this.purchased,
+    this.purchasedAt,
+    this.timeagoe,
+    this.remin,
+    this.tokens,
+  });
 
   factory UserModel.fromJson(Map<String, dynamic> json) {
     return UserModel(
-      messages: json["messages"]??'',
+      messages: json["messages"] ?? '',
       id: json["id"],
-      useremail: json["useremail"]??'',
-      phone: json["phone"]??'',
+      useremail: json["useremail"] ?? '',
+      phone: json["phone"] ?? '',
       username: json["username"],
       ref: json['ref'],
       password: json["password"],
+      isMonthly: json['isMonthly'],
       purchased: json['purchased'],
-      tokens: json['tokens']??'0',
-      remin: json['remain']??0,
+      purchasedAt: json['purchasedAt'],
+      tokens: json['tokens'] ?? '0',
+      remin: json['remain'] ?? 0,
       timeagoe: json["timeagoe"],
       package: json['package'].toString(),
     );
@@ -51,7 +58,9 @@ class UserModel {
         "id": id,
         'ref': ref,
         "password": password,
+        'isMonthly': isMonthly,
         'purchased': purchased,
+        'purchasedAt': purchasedAt,
         'tokens': tokens,
         'remain': remin,
         'timeagoe': timeagoe,

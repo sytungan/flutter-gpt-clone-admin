@@ -44,6 +44,8 @@ dependencies:
   get:
   shimmer:
   click_to_copy: ^0.0.1
+  intl:
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
