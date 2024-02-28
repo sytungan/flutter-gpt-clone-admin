@@ -53,10 +53,14 @@ class FirestoreController extends GetxController {
   }
 
   Future<void> updateTokenForUser(UserModel user) async {
-    await _db
-        .collection(_collectionUser)
-        .doc(user.id)
-        .update({"tokens": selectedTokens.value});
+    final token = int.tryParse(selectedTokens.value);
+    final isMonthly = token != null && token <= 500 ? true : false;
+    await _db.collection(_collectionUser).doc(user.id).update({
+      "tokens": selectedTokens.value,
+      'purchased': true,
+      'purchasedAt': DateTime.now().toIso8601String(),
+      'isMonthly': isMonthly,
+    });
     selectedTokens.value = '';
     fetchUsers();
   }
@@ -64,12 +68,8 @@ class FirestoreController extends GetxController {
   searchUser(String query) {
     final searchUserList = tmpUsers.where(
       (element) =>
-          (element.username ?? '')
-              .toLowerCase()
-              .contains(query.toLowerCase()) ||
-          (element.useremail ?? '')
-              .toLowerCase()
-              .contains(query.toLowerCase()) ||
+          (element.username ?? '').toLowerCase().contains(query.toLowerCase()) ||
+          (element.useremail ?? '').toLowerCase().contains(query.toLowerCase()) ||
           (element.phone ?? '').toLowerCase().contains(query.toLowerCase()),
     );
     users.clear();
@@ -81,10 +81,7 @@ class FirestoreController extends GetxController {
     showLoader();
     final usersNeedToUpdate = users.where((e) => selectedUsers.contains(e.id));
     final future = usersNeedToUpdate.map(
-      (user) => FirebaseFirestore.instance
-          .collection(_collectionUser)
-          .doc(user.id)
-          .update({
+      (user) => FirebaseFirestore.instance.collection(_collectionUser).doc(user.id).update({
         'purchase': false,
       }),
     );
@@ -99,8 +96,7 @@ class FirestoreController extends GetxController {
       GetSnackBar(
         titleText: Text(
           title ?? "Eurosom",
-          style:
-              const TextStyle(color: Colors.green, fontWeight: FontWeight.w500),
+          style: const TextStyle(color: Colors.green, fontWeight: FontWeight.w500),
         ),
         messageText: Text(
           message,

@@ -72,8 +72,7 @@ class _HomePageState extends State<HomePage> {
                           onPressed: () {
                             showDialog(
                               context: context,
-                              builder: (context) =>
-                                  const BulkUserUpdateDialog(),
+                              builder: (context) => const BulkUserUpdateDialog(),
                             );
                           },
                           style: ElevatedButton.styleFrom(
@@ -297,20 +296,14 @@ class _HomePageState extends State<HomePage> {
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  const SizedBox(
-                      width: 80,
-                      child: Text('Sr. No', textAlign: TextAlign.start)),
-                  const Expanded(
-                      child: Text('Name', textAlign: TextAlign.start)),
-                  const Expanded(
-                      flex: 2,
-                      child: Text('Email', textAlign: TextAlign.start)),
+                  const SizedBox(width: 80, child: Text('Sr. No', textAlign: TextAlign.start)),
+                  const Expanded(child: Text('Name', textAlign: TextAlign.start)),
+                  const Expanded(flex: 2, child: Text('Email', textAlign: TextAlign.start)),
                   Expanded(
                     flex: 2,
                     child: InkWell(
                       onTap: () {
-                        controller.users.sort(
-                            (a, b) => (a.phone ?? '').compareTo(b.phone ?? ""));
+                        controller.users.sort((a, b) => (a.phone ?? '').compareTo(b.phone ?? ""));
                       },
                       child: const Text('Phone ▼', textAlign: TextAlign.center),
                     ),
@@ -318,31 +311,27 @@ class _HomePageState extends State<HomePage> {
                   Expanded(
                     child: InkWell(
                       onTap: () {
-                        controller.users.sort((a, b) =>
-                            (a.tokens ?? '').compareTo(b.tokens ?? ""));
+                        controller.users.sort((a, b) => (a.tokens ?? '').compareTo(b.tokens ?? ""));
                       },
-                      child: const Text('Remaining Tokens ▼',
-                          textAlign: TextAlign.center),
+                      child: const Text('Remaining Tokens ▼', textAlign: TextAlign.center),
                     ),
                   ),
                   Expanded(
                     child: InkWell(
                       onTap: () {
                         controller.users.sort(
-                          (a, b) => ("${b.isMonthly ?? false}")
-                              .compareTo("${a.isMonthly ?? false}"),
+                          (a, b) =>
+                              ("${b.isMonthly ?? false}").compareTo("${a.isMonthly ?? false}"),
                         );
                       },
-                      child: const Text('Is Monthly ▼',
-                          textAlign: TextAlign.center),
+                      child: const Text('Plan Type ▼', textAlign: TextAlign.center),
                     ),
                   ),
                   Expanded(
                     child: InkWell(
                       onTap: () {
                         controller.users.sort(
-                          (a, b) => (b.purchasedAt ?? '')
-                              .compareTo(a.purchasedAt ?? ""),
+                          (a, b) => (b.purchasedAt ?? '').compareTo(a.purchasedAt ?? ""),
                         );
                       },
                       child: const Text(
@@ -361,8 +350,7 @@ class _HomePageState extends State<HomePage> {
                               .compareTo((b.purchased ?? false).toString()),
                         );
                       },
-                      child:
-                          const Text('Status ▼', textAlign: TextAlign.center),
+                      child: const Text('Status ▼', textAlign: TextAlign.center),
                     ),
                   ),
                   const SizedBox(width: 20),
@@ -384,9 +372,7 @@ class _HomePageState extends State<HomePage> {
                     return Container(
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(6),
-                        color: index % 2 == 0
-                            ? Colors.blue.withOpacity(.06)
-                            : null,
+                        color: index % 2 == 0 ? Colors.blue.withOpacity(.06) : null,
                       ),
                       child: Padding(
                         padding: const EdgeInsets.all(8.0),
@@ -415,29 +401,24 @@ class _HomePageState extends State<HomePage> {
                                     child: Text(
                                       controller.users[index].useremail ?? '',
                                       textAlign: TextAlign.start,
-                                      style: const TextStyle(
-                                          color: AppColor.black),
+                                      style: const TextStyle(color: AppColor.black),
                                       overflow: TextOverflow.ellipsis,
                                     ),
                                   ),
                                   const SizedBox(width: 6),
                                   InkWell(
                                     onTap: () async {
-                                      await ClickToCopy.copy(controller
-                                              .users[index].useremail!)
+                                      await ClickToCopy.copy(controller.users[index].useremail!)
                                           .then(
-                                        (value) => ScaffoldMessenger.of(context)
-                                            .showSnackBar(
+                                        (value) => ScaffoldMessenger.of(context).showSnackBar(
                                           const SnackBar(
                                             content: Text('Copied!'),
                                           ),
                                         ),
                                       );
                                     },
-                                    child: controller
-                                            .users[index].useremail!.isNotEmpty
-                                        ? const Icon(Icons.copy_outlined,
-                                            size: 16)
+                                    child: controller.users[index].useremail!.isNotEmpty
+                                        ? const Icon(Icons.copy_outlined, size: 16)
                                         : const SizedBox.shrink(),
                                   )
                                 ],
@@ -451,27 +432,20 @@ class _HomePageState extends State<HomePage> {
                                     child: Text(
                                       "${controller.users[index].phone}",
                                       textAlign: TextAlign.center,
-                                      style: const TextStyle(
-                                          color: AppColor.black),
+                                      style: const TextStyle(color: AppColor.black),
                                     ),
                                   ),
                                   const SizedBox(width: 6),
                                   InkWell(
                                     onTap: () async {
-                                      await ClickToCopy.copy(
-                                              controller.users[index].phone!)
-                                          .then(
-                                        (value) => ScaffoldMessenger.of(context)
-                                            .showSnackBar(
-                                          const SnackBar(
-                                              content: Text('Copied!')),
+                                      await ClickToCopy.copy(controller.users[index].phone!).then(
+                                        (value) => ScaffoldMessenger.of(context).showSnackBar(
+                                          const SnackBar(content: Text('Copied!')),
                                         ),
                                       );
                                     },
-                                    child: controller
-                                            .users[index].phone!.isNotEmpty
-                                        ? const Icon(Icons.copy_outlined,
-                                            size: 16)
+                                    child: controller.users[index].phone!.isNotEmpty
+                                        ? const Icon(Icons.copy_outlined, size: 16)
                                         : const SizedBox.shrink(),
                                   )
                                 ],
@@ -488,7 +462,7 @@ class _HomePageState extends State<HomePage> {
                             const SizedBox(width: 16),
                             Expanded(
                               child: Text(
-                                "${controller.users[index].isMonthly ?? '-'}",
+                                controller.users[index].isMonthly != null && controller.users[index].isMonthly! ? 'Monthly' : controller.users[index].isMonthly == null ? '-' : 'Yearly',
                                 textAlign: TextAlign.center,
                                 style: const TextStyle(color: AppColor.black),
                               ),
@@ -497,9 +471,7 @@ class _HomePageState extends State<HomePage> {
                               child: Text(
                                 controller.users[index].purchasedAt != null
                                     ? DateFormat("dd MMM, yyyy hh:mm a").format(
-                                        DateTime.parse(controller
-                                                .users[index].purchasedAt ??
-                                            ''))
+                                        DateTime.parse(controller.users[index].purchasedAt ?? ''))
                                     : "-",
                                 textAlign: TextAlign.center,
                                 style: const TextStyle(color: AppColor.black),
@@ -554,10 +526,7 @@ class _HomePageState extends State<HomePage> {
       return Center(
         child: Text(
           "There is no users.",
-          style: Theme.of(context)
-              .textTheme
-              .headlineSmall
-              ?.copyWith(color: Colors.grey),
+          style: Theme.of(context).textTheme.headlineSmall?.copyWith(color: Colors.grey),
         ),
       );
     }
