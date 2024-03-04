@@ -41,12 +41,18 @@ class FirestoreController extends GetxController {
       querySnap.docs.map((e) => UserModel.fromJson(e.data())),
     );
     users.clear();
-    list.sort((a, b) => (b.purchasedAt ?? '').compareTo(a.purchasedAt ?? ''));
+    list.sort(
+          (a, b) => (b.purchased ?? false)!
+          .toString()
+          .compareTo((a.purchased ?? false).toString()),
+    );
     users.addAll(list);
     tmpUsers.clear();
     tmpUsers.addAll(list);
     tmpUsers.sort(
-      (a, b) => b.purchased!.toString().compareTo(a.purchased.toString()),
+      (a, b) => (b.purchased ?? false)!
+          .toString()
+          .compareTo((a.purchased ?? false).toString()),
     );
     isLoading(false);
     print('SUCCESS ::::${json.encode(tmpUsers)}');

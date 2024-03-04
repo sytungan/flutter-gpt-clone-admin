@@ -7,6 +7,7 @@ class UserModel {
   String? ref;
   bool? purchased;
   bool? isMonthly;
+  bool? isPortal;
   String? purchasedAt;
   String? tokens;
   String? timeagoe;
@@ -24,6 +25,7 @@ class UserModel {
     this.password,
     this.package,
     this.isMonthly,
+    this.isPortal,
     this.purchased,
     this.purchasedAt,
     this.timeagoe,
@@ -41,6 +43,7 @@ class UserModel {
       ref: json['ref'],
       password: json["password"],
       isMonthly: json['isMonthly'],
+      isPortal: json['isPortal'],
       purchased: json['purchased'],
       purchasedAt: json['purchasedAt'],
       tokens: json['tokens'] ?? '0',
@@ -59,6 +62,7 @@ class UserModel {
         'ref': ref,
         "password": password,
         'isMonthly': isMonthly,
+        'isPortal': isPortal,
         'purchased': purchased,
         'purchasedAt': purchasedAt,
         'tokens': tokens,

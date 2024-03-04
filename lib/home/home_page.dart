@@ -488,7 +488,9 @@ class _HomePageState extends State<HomePage> {
                             const SizedBox(width: 16),
                             Expanded(
                               child: Text(
-                                "${controller.users[index].isMonthly ?? '-'}",
+                                (controller.users[index].isPortal ?? false)
+                                    ? "PORTAL"
+                                    : "${controller.users[index].isMonthly ?? '-'}",
                                 textAlign: TextAlign.center,
                                 style: const TextStyle(color: AppColor.black),
                               ),
@@ -526,7 +528,8 @@ class _HomePageState extends State<HomePage> {
                                             ? "Expired"
                                             : "Purchased",
                                         textAlign: TextAlign.center,
-                                        style: const TextStyle(color: Colors.white),
+                                        style: const TextStyle(
+                                            color: Colors.white),
                                       ),
                                     )
                                   : const SizedBox.shrink(),
