@@ -72,8 +72,7 @@ class _HomePageState extends State<HomePage> {
                           onPressed: () {
                             showDialog(
                               context: context,
-                              builder: (context) =>
-                                  const BulkUserUpdateDialog(),
+                              builder: (context) => const BulkUserUpdateDialog(),
                             );
                           },
                           style: ElevatedButton.styleFrom(
@@ -333,8 +332,7 @@ class _HomePageState extends State<HomePage> {
                               .compareTo("${a.isMonthly ?? false}"),
                         );
                       },
-                      child: const Text('Is Monthly ▼',
-                          textAlign: TextAlign.center),
+                      child: const Text('Plan Type ▼', textAlign: TextAlign.center),
                     ),
                   ),
                   Expanded(
@@ -528,8 +526,7 @@ class _HomePageState extends State<HomePage> {
                                             ? "Expired"
                                             : "Purchased",
                                         textAlign: TextAlign.center,
-                                        style: const TextStyle(
-                                            color: Colors.white),
+                                        style: const TextStyle(color: Colors.white),
                                       ),
                                     )
                                   : const SizedBox.shrink(),
