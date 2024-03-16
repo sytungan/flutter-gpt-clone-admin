@@ -44,12 +44,14 @@ class FirestoreController extends GetxController {
     if (page == 1) {
       isLoading(true);
     }
-    final querySnap =
-        await _db.collection(_collectionUser).limit(20 * page).get();
+    final querySnap = await _db
+        .collection(_collectionUser)
+        .orderBy("purchased", descending: true)
+        .limit(20 * page)
+        .get();
     final list = List<UserModel>.from(
       querySnap.docs.map((e) => UserModel.fromJson(e.data())),
     );
-    print(list.length);
     users.clear();
     list.sort(
       (a, b) => (b.purchased ?? false)!
