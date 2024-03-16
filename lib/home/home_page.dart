@@ -7,9 +7,11 @@ import 'package:eurosom_admin/res/theme_color.dart';
 import 'package:eurosom_admin/shimmers/app_shimmer.dart';
 import 'package:eurosom_admin/utils/component/app_button.dart';
 import 'package:eurosom_admin/utils/component/app_textfeild.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
+import 'package:pull_to_refresh_flutter3/pull_to_refresh_flutter3.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -72,7 +74,8 @@ class _HomePageState extends State<HomePage> {
                           onPressed: () {
                             showDialog(
                               context: context,
-                              builder: (context) => const BulkUserUpdateDialog(),
+                              builder: (context) =>
+                                  const BulkUserUpdateDialog(),
                             );
                           },
                           style: ElevatedButton.styleFrom(
@@ -332,7 +335,8 @@ class _HomePageState extends State<HomePage> {
                               .compareTo("${a.isMonthly ?? false}"),
                         );
                       },
-                      child: const Text('Plan Type ▼', textAlign: TextAlign.center),
+                      child: const Text('Plan Type ▼',
+                          textAlign: TextAlign.center),
                     ),
                   ),
                   Expanded(
@@ -374,176 +378,204 @@ class _HomePageState extends State<HomePage> {
             const SizedBox(height: 16),
             Expanded(
               child: Obx(
-                () => ListView.builder(
-                  shrinkWrap: true,
-                  padding: const EdgeInsets.symmetric(vertical: 8),
-                  itemCount: controller.users.length,
-                  itemBuilder: (context, index) {
-                    return Container(
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(6),
-                        color: index % 2 == 0
-                            ? Colors.blue.withOpacity(.06)
-                            : null,
-                      ),
-                      child: Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Row(
-                          children: [
-                            SizedBox(
-                              width: 80,
-                              child: Text(
-                                "${index + 1}",
-                                textAlign: TextAlign.start,
-                                style: const TextStyle(color: AppColor.black),
-                              ),
-                            ),
-                            Expanded(
-                              child: Text(
-                                controller.users[index].username ?? '',
-                                textAlign: TextAlign.start,
-                                style: const TextStyle(color: AppColor.black),
-                              ),
-                            ),
-                            Expanded(
-                              flex: 2,
-                              child: Row(
-                                children: [
-                                  Expanded(
-                                    child: Text(
-                                      controller.users[index].useremail ?? '',
-                                      textAlign: TextAlign.start,
-                                      style: const TextStyle(
-                                          color: AppColor.black),
-                                      overflow: TextOverflow.ellipsis,
-                                    ),
+                () => ScrollConfiguration(
+                  behavior: ScrollConfiguration.of(context).copyWith(
+                    dragDevices: {
+                      PointerDeviceKind.touch,
+                      PointerDeviceKind.mouse,
+                      PointerDeviceKind.trackpad,
+                      PointerDeviceKind.stylus,
+                    },
+                  ),
+                  child: SmartRefresher(
+                    enablePullDown: true,
+                    enablePullUp: true,
+                    enableTwoLevel: false,
+                    controller: controller.refreshController,
+                    onRefresh: () => controller.fetchUsers(isRefresh: true),
+                    onLoading: () => controller.fetchUsers(isRefresh: false),
+                    child: ListView.builder(
+                      padding: const EdgeInsets.symmetric(vertical: 8),
+                      itemCount: controller.users.length,
+                      itemBuilder: (context, index) {
+                        return Container(
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(6),
+                            color: index % 2 == 0
+                                ? Colors.blue.withOpacity(.06)
+                                : null,
+                          ),
+                          child: Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Row(
+                              children: [
+                                SizedBox(
+                                  width: 80,
+                                  child: Text(
+                                    "${index + 1}",
+                                    textAlign: TextAlign.start,
+                                    style:
+                                        const TextStyle(color: AppColor.black),
                                   ),
-                                  const SizedBox(width: 6),
-                                  InkWell(
-                                    onTap: () async {
-                                      await ClickToCopy.copy(controller
-                                              .users[index].useremail!)
-                                          .then(
-                                        (value) => ScaffoldMessenger.of(context)
-                                            .showSnackBar(
-                                          const SnackBar(
-                                            content: Text('Copied!'),
-                                          ),
-                                        ),
-                                      );
-                                    },
-                                    child: controller
-                                            .users[index].useremail!.isNotEmpty
-                                        ? const Icon(Icons.copy_outlined,
-                                            size: 16)
-                                        : const SizedBox.shrink(),
-                                  )
-                                ],
-                              ),
-                            ),
-                            const SizedBox(width: 6),
-                            Expanded(
-                              child: Row(
-                                children: [
-                                  Expanded(
-                                    child: Text(
-                                      "${controller.users[index].phone}",
-                                      textAlign: TextAlign.center,
-                                      style: const TextStyle(
-                                          color: AppColor.black),
-                                    ),
+                                ),
+                                Expanded(
+                                  child: Text(
+                                    controller.users[index].username ?? '',
+                                    textAlign: TextAlign.start,
+                                    style:
+                                        const TextStyle(color: AppColor.black),
                                   ),
-                                  const SizedBox(width: 6),
-                                  InkWell(
-                                    onTap: () async {
-                                      await ClickToCopy.copy(
-                                              controller.users[index].phone!)
-                                          .then(
-                                        (value) => ScaffoldMessenger.of(context)
-                                            .showSnackBar(
-                                          const SnackBar(
-                                              content: Text('Copied!')),
+                                ),
+                                Expanded(
+                                  flex: 2,
+                                  child: Row(
+                                    children: [
+                                      Expanded(
+                                        child: Text(
+                                          controller.users[index].useremail ??
+                                              '',
+                                          textAlign: TextAlign.start,
+                                          style: const TextStyle(
+                                              color: AppColor.black),
+                                          overflow: TextOverflow.ellipsis,
                                         ),
-                                      );
-                                    },
-                                    child: controller
-                                            .users[index].phone!.isNotEmpty
-                                        ? const Icon(Icons.copy_outlined,
-                                            size: 16)
-                                        : const SizedBox.shrink(),
-                                  )
-                                ],
-                              ),
-                            ),
-                            const SizedBox(width: 10),
-                            Expanded(
-                              child: Text(
-                                "${controller.users[index].tokens}",
-                                textAlign: TextAlign.center,
-                                style: const TextStyle(color: AppColor.black),
-                              ),
-                            ),
-                            const SizedBox(width: 16),
-                            Expanded(
-                              child: Text(
-                                (controller.users[index].isPortal ?? false)
-                                    ? "PORTAL"
-                                    : "${controller.users[index].isMonthly ?? '-'}",
-                                textAlign: TextAlign.center,
-                                style: const TextStyle(color: AppColor.black),
-                              ),
-                            ),
-                            Expanded(
-                              child: Text(
-                                controller.users[index].purchasedAt != null
-                                    ? DateFormat("dd MMM, yyyy hh:mm a").format(
-                                        DateTime.parse(controller
-                                                .users[index].purchasedAt ??
-                                            ''))
-                                    : "-",
-                                textAlign: TextAlign.center,
-                                style: const TextStyle(color: AppColor.black),
-                              ),
-                            ),
-                            Expanded(
-                              child: controller.users[index].purchased == true
-                                  ? Container(
-                                      color: isExpired(
-                                        controller.users[index].purchasedAt,
-                                        controller.users[index].isMonthly,
+                                      ),
+                                      const SizedBox(width: 6),
+                                      InkWell(
+                                        onTap: () async {
+                                          await ClickToCopy.copy(controller
+                                                  .users[index].useremail!)
+                                              .then(
+                                            (value) =>
+                                                ScaffoldMessenger.of(context)
+                                                    .showSnackBar(
+                                              const SnackBar(
+                                                content: Text('Copied!'),
+                                              ),
+                                            ),
+                                          );
+                                        },
+                                        child: controller.users[index]
+                                                .useremail!.isNotEmpty
+                                            ? const Icon(Icons.copy_outlined,
+                                                size: 16)
+                                            : const SizedBox.shrink(),
                                       )
-                                          ? Colors.red
-                                          : Colors.green,
-                                      margin: const EdgeInsets.symmetric(
-                                        horizontal: 8,
+                                    ],
+                                  ),
+                                ),
+                                const SizedBox(width: 6),
+                                Expanded(
+                                  child: Row(
+                                    children: [
+                                      Expanded(
+                                        child: Text(
+                                          "${controller.users[index].phone}",
+                                          textAlign: TextAlign.center,
+                                          style: const TextStyle(
+                                              color: AppColor.black),
+                                        ),
                                       ),
-                                      padding: const EdgeInsets.all(10),
-                                      child: Text(
-                                        isExpired(
-                                          controller.users[index].purchasedAt,
-                                          controller.users[index].isMonthly,
+                                      const SizedBox(width: 6),
+                                      InkWell(
+                                        onTap: () async {
+                                          await ClickToCopy.copy(controller
+                                                  .users[index].phone!)
+                                              .then(
+                                            (value) =>
+                                                ScaffoldMessenger.of(context)
+                                                    .showSnackBar(
+                                              const SnackBar(
+                                                  content: Text('Copied!')),
+                                            ),
+                                          );
+                                        },
+                                        child: controller
+                                                .users[index].phone!.isNotEmpty
+                                            ? const Icon(Icons.copy_outlined,
+                                                size: 16)
+                                            : const SizedBox.shrink(),
+                                      )
+                                    ],
+                                  ),
+                                ),
+                                const SizedBox(width: 10),
+                                Expanded(
+                                  child: Text(
+                                    "${controller.users[index].tokens}",
+                                    textAlign: TextAlign.center,
+                                    style:
+                                        const TextStyle(color: AppColor.black),
+                                  ),
+                                ),
+                                const SizedBox(width: 16),
+                                Expanded(
+                                  child: Text(
+                                    (controller.users[index].isPortal ?? false)
+                                        ? "PORTAL"
+                                        : "${controller.users[index].isMonthly ?? '-'}",
+                                    textAlign: TextAlign.center,
+                                    style:
+                                        const TextStyle(color: AppColor.black),
+                                  ),
+                                ),
+                                Expanded(
+                                  child: Text(
+                                    controller.users[index].purchasedAt != null
+                                        ? DateFormat("dd MMM, yyyy hh:mm a")
+                                            .format(DateTime.parse(controller
+                                                    .users[index].purchasedAt ??
+                                                ''))
+                                        : "-",
+                                    textAlign: TextAlign.center,
+                                    style:
+                                        const TextStyle(color: AppColor.black),
+                                  ),
+                                ),
+                                Expanded(
+                                  child: controller.users[index].purchased ==
+                                          true
+                                      ? Container(
+                                          color: isExpired(
+                                            controller.users[index].purchasedAt,
+                                            controller.users[index].isMonthly,
+                                          )
+                                              ? Colors.red
+                                              : Colors.green,
+                                          margin: const EdgeInsets.symmetric(
+                                            horizontal: 8,
+                                          ),
+                                          padding: const EdgeInsets.all(10),
+                                          child: Text(
+                                            isExpired(
+                                              controller
+                                                  .users[index].purchasedAt,
+                                              controller.users[index].isMonthly,
+                                            )
+                                                ? "Expired"
+                                                : "Purchased",
+                                            textAlign: TextAlign.center,
+                                            style: const TextStyle(
+                                                color: Colors.white),
+                                          ),
                                         )
-                                            ? "Expired"
-                                            : "Purchased",
-                                        textAlign: TextAlign.center,
-                                        style: const TextStyle(color: Colors.white),
-                                      ),
-                                    )
-                                  : const SizedBox.shrink(),
+                                      : const SizedBox.shrink(),
+                                ),
+                                Expanded(
+                                  child: AppButton(
+                                    text: "UPDATE TOKEN",
+                                    onPressed: () {
+                                      _showDialog(controller.users[index]);
+                                    },
+                                  ),
+                                ),
+                              ],
                             ),
-                            Expanded(
-                              child: AppButton(
-                                text: "UPDATE TOKEN",
-                                onPressed: () {
-                                  _showDialog(controller.users[index]);
-                                },
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    );
-                  },
+                          ),
+                        );
+                      },
+                    ),
+                  ),
                 ),
               ),
             ),

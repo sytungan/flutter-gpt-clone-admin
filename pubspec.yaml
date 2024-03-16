@@ -45,6 +45,7 @@ dependencies:
   shimmer:
   click_to_copy: ^0.0.1
   intl:
+  pull_to_refresh_flutter3:
 
 dev_dependencies:
   flutter_test:

@@ -5,6 +5,7 @@ import 'package:eurosom_admin/model/user_model.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:pull_to_refresh_flutter3/pull_to_refresh_flutter3.dart';
 
 class FirestoreController extends GetxController {
   final users = <UserModel>[].obs;
@@ -18,6 +19,8 @@ class FirestoreController extends GetxController {
   final _db = FirebaseFirestore.instance;
   final String _collectionAdmin = "admin";
   final String _collectionUser = "users";
+  int page = 1;
+  final RefreshController refreshController = RefreshController();
 
   void checkRadio(String value) {
     currentPlan.value = value;
@@ -34,15 +37,22 @@ class FirestoreController extends GetxController {
         .set({"useremail": email, "password": password});
   }
 
-  fetchUsers() async {
-    isLoading(true);
-    final querySnap = await _db.collection(_collectionUser).get();
+  fetchUsers({bool isRefresh = false}) async {
+    if (isRefresh) {
+      page = 1;
+    }
+    if (page == 1) {
+      isLoading(true);
+    }
+    final querySnap =
+        await _db.collection(_collectionUser).limit(20 * page).get();
     final list = List<UserModel>.from(
       querySnap.docs.map((e) => UserModel.fromJson(e.data())),
     );
+    print(list.length);
     users.clear();
     list.sort(
-          (a, b) => (b.purchased ?? false)!
+      (a, b) => (b.purchased ?? false)!
           .toString()
           .compareTo((a.purchased ?? false).toString()),
     );
@@ -54,7 +64,15 @@ class FirestoreController extends GetxController {
           .toString()
           .compareTo((a.purchased ?? false).toString()),
     );
-    isLoading(false);
+    if (page == 1) {
+      isLoading(false);
+    }
+    page++;
+    if (isRefresh) {
+      refreshController.refreshCompleted();
+    } else {
+      refreshController.loadComplete();
+    }
     print('SUCCESS ::::${json.encode(tmpUsers)}');
   }
 
@@ -74,8 +92,12 @@ class FirestoreController extends GetxController {
   searchUser(String query) {
     final searchUserList = tmpUsers.where(
       (element) =>
-          (element.username ?? '').toLowerCase().contains(query.toLowerCase()) ||
-          (element.useremail ?? '').toLowerCase().contains(query.toLowerCase()) ||
+          (element.username ?? '')
+              .toLowerCase()
+              .contains(query.toLowerCase()) ||
+          (element.useremail ?? '')
+              .toLowerCase()
+              .contains(query.toLowerCase()) ||
           (element.phone ?? '').toLowerCase().contains(query.toLowerCase()),
     );
     users.clear();
@@ -87,7 +109,10 @@ class FirestoreController extends GetxController {
     showLoader();
     final usersNeedToUpdate = users.where((e) => selectedUsers.contains(e.id));
     final future = usersNeedToUpdate.map(
-      (user) => FirebaseFirestore.instance.collection(_collectionUser).doc(user.id).update({
+      (user) => FirebaseFirestore.instance
+          .collection(_collectionUser)
+          .doc(user.id)
+          .update({
         'purchase': false,
       }),
     );
@@ -102,7 +127,8 @@ class FirestoreController extends GetxController {
       GetSnackBar(
         titleText: Text(
           title ?? "Eurosom",
-          style: const TextStyle(color: Colors.green, fontWeight: FontWeight.w500),
+          style:
+              const TextStyle(color: Colors.green, fontWeight: FontWeight.w500),
         ),
         messageText: Text(
           message,
