@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:eurosom_admin/model/user_model.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -25,6 +23,8 @@ class FirestoreController extends GetxController {
   void checkRadio(String value) {
     currentPlan.value = value;
   }
+
+  String query = '';
 
   addAdmin(
     String email,
@@ -75,7 +75,7 @@ class FirestoreController extends GetxController {
     } else {
       refreshController.loadComplete();
     }
-    print('SUCCESS ::::${json.encode(tmpUsers)}');
+    print('SUCCESS ::::${tmpUsers.length}');
   }
 
   Future<void> updateTokenForUser(UserModel user) async {
@@ -91,20 +91,42 @@ class FirestoreController extends GetxController {
     fetchUsers();
   }
 
-  searchUser(String query) {
-    final searchUserList = tmpUsers.where(
-      (element) =>
-          (element.username ?? '')
-              .toLowerCase()
-              .contains(query.toLowerCase()) ||
-          (element.useremail ?? '')
-              .toLowerCase()
-              .contains(query.toLowerCase()) ||
-          (element.phone ?? '').toLowerCase().contains(query.toLowerCase()),
+  onQueryTextChanged(String query) {
+    this.query = query;
+  }
+
+  searchUser(String query) async {
+    final text = query.trim().toLowerCase();
+    isLoading(true);
+    if (query.trim().isEmpty) {
+      fetchUsers(isRefresh: true);
+      return;
+    }
+    final querySnap = await _db
+        .collection(_collectionUser)
+        .where("useremail", isGreaterThanOrEqualTo: text)
+        .get();
+
+    final list = List<UserModel>.from(
+      querySnap.docs.map((e) => UserModel.fromJson(e.data())),
+    );
+
+    List<UserModel> filteredList = list
+        .where((user) =>
+            (user.username?.contains(text) ?? false) ||
+            (user.useremail?.contains(text) ?? false) ||
+            (user.phone?.contains(text) ?? false))
+        .toList();
+
+    filteredList.sort(
+      (a, b) => (b.purchased ?? false)!
+          .toString()
+          .compareTo((a.purchased ?? false).toString()),
     );
     users.clear();
-    users.addAll(searchUserList);
-    print('SEARCH LIST ::: ${searchUserList.length}');
+    users.addAll(filteredList);
+    isLoading(false);
+    print('SEARCH LIST ::: ${list.length}');
   }
 
   Future<void> disableAccount() async {

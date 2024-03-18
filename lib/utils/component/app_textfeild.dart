@@ -11,6 +11,7 @@ class AppTextField extends StatelessWidget {
   final bool? enabled;
   final Function(String?)? onSaved;
   final Function(String)? onChange;
+  final Function(String)? onFieldSubmitted;
 
   // final String obscureSize;
   final bool? autoCorrect;
@@ -41,6 +42,7 @@ class AppTextField extends StatelessWidget {
     this.style,
     this.hintStyle,
     this.prefixIcon,
+    this.onFieldSubmitted,
     // this.obscureSize = '.',
   });
 
@@ -57,6 +59,7 @@ class AppTextField extends StatelessWidget {
       textInputAction: textInputAction,
       controller: controller,
       obscureText: obscureText,
+      onFieldSubmitted: onFieldSubmitted,
       style: style ??
           const TextStyle(
             fontSize: 12,

@@ -52,9 +52,8 @@ class _HomePageState extends State<HomePage> {
                                 Icons.search,
                                 color: Colors.grey.shade400,
                               ),
-                              onChange: (value) {
-                                controller.searchUser(value);
-                              },
+                              onFieldSubmitted: (value) =>
+                                  controller.searchUser(value),
                               controller: controller.nameController.value,
                               cursorColor: AppColor.themeColor,
                               hintText: 'Search..',
