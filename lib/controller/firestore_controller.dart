@@ -47,6 +47,7 @@ class FirestoreController extends GetxController {
     final querySnap = await _db
         .collection(_collectionUser)
         .orderBy("purchased", descending: true)
+        .orderBy("purchasedAt", descending: true)
         .limit(20 * page)
         .get();
     final list = List<UserModel>.from(
@@ -96,7 +97,7 @@ class FirestoreController extends GetxController {
   }
 
   searchUser(String query) async {
-    final text = query.trim().toLowerCase();
+    final text = query.trim();
     isLoading(true);
     if (query.trim().isEmpty) {
       fetchUsers(isRefresh: true);
